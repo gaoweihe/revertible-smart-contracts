@@ -89,7 +89,7 @@ contract RLInstructor {
         executor = RLExecutor(_executorAddress);
     }
 
-    function double_temp_transfer_value() private {
+    function double_transfer_value() private {
         uint curr_transfer_value = get_transfer_value_primary();
         set_transfer_value_temp(curr_transfer_value * 2);
     }
@@ -100,7 +100,7 @@ contract RLInstructor {
         if (!is_success) { revert("failed to aquire lock"); }
 
         // double temp value 
-        double_temp_transfer_value(); 
+        double_transfer_value(); 
     }
 
     function end_transaction(bool is_success) public {
