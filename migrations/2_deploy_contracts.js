@@ -1,9 +1,11 @@
-const Callee = artifacts.require("Callee");
-const Caller = artifacts.require("Caller");
+const RLExecutor = artifacts.require("RLExecutor");
+const RLInstructor = artifacts.require("RLInstructor");
 
 module.exports = function(deployer) {
   // deployment steps
-  deployer.deploy(Callee).then(() => 
-    deployer.deploy(Caller, Callee.address)
-  );
+  var RLExecutor_addr;
+  deployer.deploy(RLExecutor, {overwrite: true}).then(async () => {
+    RLExecutor_addr = RLExecutor.address; 
+    await deployer.deploy(RLInstructor, RLExecutor_addr, {overwrite: true}); 
+  });
 };
