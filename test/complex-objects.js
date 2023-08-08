@@ -1,5 +1,5 @@
-const RLInstructor = artifacts.require("COInstructor");
-const RLExecutor = artifacts.require("COExecutor");
+const COInstructor = artifacts.require("COInstructor");
+const COExecutor = artifacts.require("COExecutor");
 
 contract("TestCO", (accounts) => {
     it("simple call", async () => {
