@@ -12,11 +12,30 @@ contract("TestRL", (accounts) => {
         const chainy_network = new Web3(new Web3.providers.HttpProvider('http://localhost:60546'));
         const nsb_network = new Web3(new Web3.providers.HttpProvider('http://localhost:60547'));
         
-        const instance = await SmartContractA.deployed(); 
-        result = await instance.increase_value();
+        const SCAInstance = await SmartContractA.deployed(); 
+        const SCBInstance = await SmartContractB.deployed(); 
+        const NSBInstance = await NSB.deployed(); 
+
+        // push ops to NSB first
+        NSBInstance.push_invoke_op("SmartContractA", "increase_value"); 
+
+        // ops on sc A
+        result = await SCAInstance.increase_value();
         console.log('Increased value:', result.logs[0].args.newValue.toString());
-        await instance._revert(1); 
-        result = await instance.get_value();
+
+        // ops on sc B 
+        NSBInstance.push_invoke_op("SmartContractB", "set_value"); 
+        SCBInstance.set_value(result.logs[0].args.newValue);
+
+        // revert chain B 
+        NSBInstance.pop_invoke_op(); 
+        await SCBInstance._revert(1); 
+
+        // revert chain A
+        NSBInstance.pop_invoke_op(); 
+        await SCAInstance._revert(1); 
+
+        result = await SCAInstance.get_value();
         console.log("Get value: ", result.toString()); 
     });
 });

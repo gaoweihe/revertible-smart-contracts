@@ -16,8 +16,9 @@ contract NSB {
         revertStack = new GenericStack();
     }
 
-    function push_invoke_op(invoke_info calldata data) public {
-        revertStack.push(abi.encode(data));
+    function push_invoke_op(string calldata contract_name, string calldata function_name) public {
+        invoke_info memory ii = invoke_info(contract_name, function_name);
+        revertStack.push(abi.encode(ii));
     }
 
     function pop_invoke_op() public returns (invoke_info memory ii) {
